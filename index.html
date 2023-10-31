@@ -81,9 +81,6 @@
         setState('nextTaskId', newId + 1);
     }
    
-   /////////// doesn't work in active page ---------
-    // window.addEventListener('storage', (event) => 
-    //     notes.value = getField('note', getState('currentTaskId')));
     //// Task List
     window.onload = function(){
         getTaskList();
@@ -159,9 +156,6 @@
         catch(e){
             throw new Error('no id avalible');
         }
-        // finally{
-        //     return '';
-        // }
         location.reload();
     }
     }
@@ -179,7 +173,7 @@
     function changePriority(id) {
         let fullObj = JSON.parse(localStorage[`task-${id}`]);
         fullObj['priority'] = !fullObj['priority'];
-        localStorage[`task-${id}`] = JSON.stringify(fullObj);  ////// togggle class for stars
+        localStorage[`task-${id}`] = JSON.stringify(fullObj);  
     }
 
      
@@ -191,7 +185,6 @@
         for (let key of keysOfStorage) {
             if (key === 'state') continue;
             let oneTask = JSON.parse(localStorage.getItem(key));
-        //    if (oneTask.dateCompleted) continue;
             if (oneTask.id && !oneTask.dateCompleted) return oneTask.id;
         }
     }
@@ -206,10 +199,6 @@
       if (event.target.tagName != "LI") return;
         singleSelect(event.target);
     }
-
-    // tasks.onmousedown = function() {
-    //   return false;
-    // };
 
     function singleSelect(li) {
         let selectedTasks = tasks.querySelectorAll('.selected');
@@ -229,18 +218,6 @@
         
         setState('currentTaskId', li.dataset.id)
     }
-
-    
-
-    // let deleteButtons = tasks.querySelectorAll('span.del');
-    // deleteButtons.addEventListener('click', function(e) {
-    //     console.log(e);
-    // });
-
-
-    //// Textarea NOTES
-
-    
 
 
     //// archive
