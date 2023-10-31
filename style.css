@@ -1,0 +1,230 @@
+body {
+    font-family: Helvetica, sans-serif;
+    color:#222;
+    padding: 20px;
+    transition: all .5s ease;
+}
+h1 {
+    font-size: 48px;
+    font-weight: 400;
+    text-transform: uppercase;
+    text-align: center;
+    margin: 15px 0 0;
+}
+.wrapper{
+    margin: 20px auto;
+    width: 600px;
+    min-height: 600px;
+    border: 2px solid #222;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    background-color: #e4e4e4;
+}
+.wrapper div {
+    width: 295px;
+}
+section {
+    width: 275px;
+    padding: 10px;
+    background-color: #d6d6d6;
+    display: inline-table;
+    margin: 5px auto;
+    border-radius: 10px;
+}
+
+ul, ol {
+    margin: 10px 0;
+    padding: 0;
+    list-style: none;
+}
+li {
+    padding: 6px 65px 6px 6px;
+    position: relative;
+    transition: all .3s ease;
+}
+li:hover {
+    cursor: pointer;
+    background-color: #bbb !important;
+}
+li:nth-child(2n - 1) {
+    background-color: #ccc;
+}
+li.selected {
+    background-color: #888;
+    color: #fff;
+}
+li span {
+    font-weight: 900;
+    font-size: 14px;
+    color: #fff;
+}
+li p {
+    display: inline-block;
+    margin: 0;
+    position: absolute;
+    right: 3px;
+    top: 0px;
+}
+span.star {
+    font-size: 14px;
+    padding: 0 10px;
+    position: relative;
+    top: -2px;
+    transition: all .3s ease;
+}
+span.check, span.del {
+    font-size: 24px;
+    transition: all .3s ease;
+}
+span.completeDate {
+    color: #333;
+    font-size: 14px;
+    font-weight: 300;
+    position: relative;
+    top: -1px;
+    padding: 5px;
+}
+span.check:hover {
+    color:rgb(0, 234, 0);
+}
+span.star:hover {
+    color:yellow;
+}
+span.del:hover {
+    color:red;
+}
+.star.active {
+    color:yellow;
+}
+.sideBarRight {
+    display: inline-grid;
+}
+.sideBarLeft {
+    display: inline-grid;
+    margin-left: 3px;
+}
+label, h3 {
+    text-transform: uppercase;
+    font-size: 18px;
+    font-weight: 400;
+    padding: 5px 0 0 0;
+    margin: 0;
+}
+.notes label {
+    display: inline-block;
+}
+.add input {
+    height: 20px;
+    width: 135px;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 5px 5px 10px;
+}
+.add button {
+    border: none;
+    border-radius: 5px;
+    padding: 4px 7px;
+    font-size: 18px;
+    background-color: #999;
+    color: #fff;
+    cursor: pointer;
+}
+.add button:hover, .notes button:hover {
+    background-color: #bbb;
+}
+.add {
+    display: flex;
+    justify-content: space-between;
+}
+.date {
+    text-align: center;
+    font-size: 18px;
+    padding: 10px;
+    margin: 0;
+}
+#encouragement {
+    padding: 10px;
+    font-size: 18px;
+    color: #0ca10d;
+    font-weight: bold;
+}
+.notes p {
+    font-size: 14px;
+    margin: 5px 0;
+    display: none;
+}
+.notes textarea {
+    width: 260px;
+    max-width: 260px;
+    min-width: 260px;
+    height: 60px;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 5px 5px 10px;
+    margin: 10px 0 5px;
+}
+.notes button {
+    text-transform: uppercase;
+    border: none;
+    border-radius: 5px;
+    padding: 4px 7px;
+    width: 275px;
+    font-size: 16px;
+    background-color: rgb(107 203 107);
+    color: #fff;
+    cursor: pointer;
+}
+.notes button:hover {
+    background-color: rgb(12 161 12);
+}
+#press {
+    cursor: pointer;
+    margin-bottom: 10px;
+    display: inline;
+}
+#press span {
+    font-size: 14px;
+    display: none;
+    position: relative;
+    top: -1px;
+}
+.actArrow {
+    display: inline !important;
+}
+#archive.act {
+    height: 187px;
+    transition: all .5s ease;
+}
+#archive {
+    overflow: auto;
+    height: 0px;
+    transition: all .5s ease;
+}
+
+.archive {
+    background-color:unset;
+}
+.clearAll {
+    margin: 0;
+    float: right;
+    cursor: pointer;
+    padding: 2px;
+}
+.archive li {
+    background-color: rgb(221 255 221);
+    width: 204px;
+}
+.archive li.selected {
+    background-color: rgb(107 203 107) !important;
+}
+.archive li:nth-child(2n-1) {
+    background-color: rgb(198, 255, 198);
+}
+.archive li:hover {
+    background-color: rgb(125 228 126) !important;
+    color: #fff;
+}
+
+
+/***************** Put transition & animation to all motions */
