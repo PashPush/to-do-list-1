@@ -1,87 +1,62 @@
 <!doctype html>
 <head>
-    <title>To do list</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <script src="storage.js"></script>
-    <script src="utilities.js"></script>
-    <script src="DOM.js"></script>
+  <title>To do list</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body>
 <div class="wrapper">
-        <h1>To do List</h1>
-        <p class="date">Today is: <span id="date"></span></p>
-        <div class="sideBarLeft">
-            <section class="theList">
-                <form class="add" method="post" id="addNew">
-                    <label for="task">Add new:</label>
-                    <input name="task" id="task" type="text" placeholder="what to do?"/>
-                    <button type="submit">+</button>
-                </form>
-                <ul id="tasks"> </ul>
-            </section>
-            <section class="archive">
-                <h3 id="press">Archive <span class='actArrow'>▶</span> 
-                    <span>▼</span> </h3>
-                    <p class="clearAll" id="clearAll">Clear all</p>
-                    <ul id='archive'></ul>
-    
-            </section>
+  <h1>To do List</h1>
+  <p class="date-module">Today is: <span class="date"></span></p>
 
-        </div>
-        <div class="sideBarRight">
-            <section class="notes">
-                <label for="notes">Notes:</label><span id="encouragement"></span>
-                <textarea id="notes" placeholder="Add notes"></textarea>
-                <br>
-               <button id="completeBtn">Complete</button>
-                <br>
-                <p>Added: <span id="added"></span></p>
-                <p>Completed: <span id="completed"></span></p>
-            </section>
-            <!-- <section class="priority">
-                <h3>★ Priorities ★</h3>
-                <ol>
-                    <li>Task 1</li>
-                    <li>Task 2</li>
-                    <li>Task 3</li>
-                </ol>
-            </section> -->
-        </div>
-        
+  <div class="sideBarLeft">
+    <section class="theList">
+      <form class="add" name="addNewTask">
+        <label for="task">Add new:</label>
+        <input name="task" class="task" id="task" type="text" placeholder="what to do?"/>
+        <button type="submit">+</button>
+      </form>
+      <ul class="tasks-list"> </ul>
+    </section>
+
+    <section class="no-bg">
+      <h3 class="archive-slide">Archive <span class='actArrow'>▶</span> 
+        <span>▼</span> </h3>
+        <p class="clearAll">Clear all</p>
+        <ul class='archive'></ul>
+    </section>
+  </div>
+
+  <div class="sideBarRight">
+    
+    <section class="notes-section">
+      <label for="notesArea">Notes:</label><span class="encouragement"></span>
+      <textarea class="notes" id="notesArea" placeholder="Add notes"></textarea>
+      <br>
+      <button class="completeBtn">Complete</button>
+      <br>
+      <p>Added: <span class="added"></span></p>
+      <p>Completed: <span class="completed"></span></p>
+    </section>
+    <!-- <section class="priority">
+        <h3>★ Priorities ★</h3>
+        <ol>
+            <li>Task 1</li>
+            <li>Task 2</li>
+            <li>Task 3</li>
+        </ol>
+    </section> -->
+  </div>
 </div>
 
 <script>
 
 
-{    
-    let currentDate = new Date();
-    date.innerHTML =  `${currentDate.toLocaleDateString()}`;
+let task = document.querySelector('.task');
 
-    if (!localStorage.getItem('state')) {
-        localStorage.setItem('state', '{"nextTaskId":0,"activeTasks":0}');
-    }
-}
-    //// Add New Tesk
-    addNew.addEventListener('submit', (event) => {addNewTask(event)});
+let notes = document.querySelector('.notes');
+let completeBtn = document.querySelector('.completeBtn');
 
-    function addNewTask (event) {
-        if (!task.value) {event.preventDefault(); return;}
-        let taskSample = {
-        name : task.value,
-        note : '',
-        dateAdded : new Date(),
-        dateCompleted : '',
-        priority : false,
-        rate : 0,
-        id : JSON.parse(localStorage.state).nextTaskId,
-    }
-        if (!getState('nextTaskId')) {setState('nextTaskId', 0)}
-        let newId = getState('nextTaskId');
-        localStorage.setItem(`task-${newId}`, JSON.stringify(taskSample));
-        setState('currentTaskId', newId);
-        setState('nextTaskId', newId + 1);
-    }
    
     //// Task List
     window.onload = function(){
@@ -96,7 +71,7 @@
                 notes.addEventListener('input', () => {
                     let fullObject = getFullObject(getState('currentTaskId'));
                     fullObject.note = notes.value;
-                    localStorage.setItem(`task-${getState('currentTaskId')}`, JSON.stringify(fullObject))});
+                    localStorage.setItem(getState('currentTaskId'), JSON.stringify(fullObject))});
             } else {
                 notes.disabled = true;
             }
@@ -109,216 +84,10 @@
         }
     }
 
-    function getTaskList() {       
-        let keysOfStorage = Object.keys(localStorage);
-        keysOfStorage.sort((a, b) => b.replace(/\D/g,'') - a.replace(/\D/g,''));
-        for (let key of keysOfStorage) {
-            if (key === 'state') continue;
-            let oneTask = JSON.parse(localStorage.getItem(key));
-            if (oneTask.dateCompleted) continue;
-            let liTask = document.createElement('li');
-            if (oneTask.id == getState('currentTaskId')) liTask.classList.add('selected');
-            let isActiveStar = (getField('priority', oneTask.id)) ? 'active' : '';
-            liTask.dataset.id = oneTask.id;
-            liTask.innerHTML = `${oneTask.name}<p>
-                <span class="star ${isActiveStar}" onclick="changePriority(${oneTask.id})">★</span>
-                <span class="del" onclick="deleteTask(${oneTask.id})">☒</span></p>`;
-            tasks.append(liTask);
-            added.parentNode.style.display = 'inherit';
-            completed.parentNode.style.display = 'inherit';
-            
-        }
-        setState('activeTasks', tasks.children.length);
-        if (tasks.children.length == 0) {
-            tasks.innerHTML = "There are no tasks.<br>The very time to add few :)";
-            added.parentNode.style.display = 'none';
-            completed.parentNode.style.display = 'none';
-            return
-        }
-    }
-
-    function setState(key, value) {
-        let fullObj = JSON.parse(localStorage.state);
-        fullObj[key] = value;
-        localStorage.state = JSON.stringify(fullObj);
-    }
-    function getState(key) {
-        let fullObj = JSON.parse(localStorage.state);
-        return fullObj[key];
-    }
-    
-    function getField(field, id) {
-      let obj = getFullObject(id);
-      if (obj) return obj[field];
-      else {
-        setState('currentTaskId', getOneId())
-        try{
-            getField(field, getOneId());
-        }
-        catch(e){
-            throw new Error('no id avalible');
-        }
-        location.reload();
-    }
-    }
-
-    function getFullObject(id) {
-        return JSON.parse(localStorage.getItem(`task-${id}`));
-    }
-
-    function deleteTask(id) {
-        if (id == getState('currentTaskId')) setState('currentTaskId', getOneId());
-        localStorage.removeItem('task-' + id);
-        location.reload();
-    }
-
-    function changePriority(id) {
-        let fullObj = JSON.parse(localStorage[`task-${id}`]);
-        fullObj['priority'] = !fullObj['priority'];
-        localStorage[`task-${id}`] = JSON.stringify(fullObj);  
-    }
-
-     
-
-    function getOneId() {
-        let keysOfStorage = Object.keys(localStorage);
-        if (keysOfStorage.length <= 1) return false;
-        keysOfStorage.sort((a, b) => b.replace(/\D/g,'') - a.replace(/\D/g,''));
-        for (let key of keysOfStorage) {
-            if (key === 'state') continue;
-            let oneTask = JSON.parse(localStorage.getItem(key));
-            if (oneTask.id && !oneTask.dateCompleted) return oneTask.id;
-        }
-    }
-    //// Task Selector 
-
-    tasks.onclick = function(event) {
-      if (event.target.tagName != "LI") return;
-        singleSelect(event.target);
-    }
-
-    archive.onclick = function(event) {
-      if (event.target.tagName != "LI") return;
-        singleSelect(event.target);
-    }
-
-    function singleSelect(li) {
-        let selectedTasks = tasks.querySelectorAll('.selected');
-        let selectedArchive = archive.querySelectorAll('.selected');
-        for(let elem of selectedTasks) {
-            elem.classList.remove('selected');
-        }
-        for(let elem of selectedArchive) {
-            elem.classList.remove('selected');
-        }
-        li.classList.add('selected');
-        let oneTask = JSON.parse(localStorage.getItem('task-'+li.dataset.id));
-        if (oneTask.dateCompleted) notes.disabled = true;
-        else notes.disabled = false;
-        notes.value = getField('note', li.dataset.id);
-        setTimeout(()=> getAddedAndCompleted(), 0);
-        
-        setState('currentTaskId', li.dataset.id)
-    }
-
-
-    //// archive
-{
-
-        press.addEventListener('click', 
-            () => archive.classList.toggle('act'));
-        press.addEventListener('click', () => {
-            let spans = press.querySelectorAll('span');
-            for (let span of spans) {
-                span.classList.toggle('actArrow');
-                }
-            }
-        );
-}
-function getArchiveList() {       
-        let keysOfStorage = Object.keys(localStorage);
-        keysOfStorage.sort((a, b) => b.replace(/\D/g,'') - a.replace(/\D/g,''));
-        for (let key of keysOfStorage) {
-            if (key === 'state') continue;
-            let oneTask = JSON.parse(localStorage.getItem(key));
-            if (!oneTask.dateCompleted) continue;
-            let liTask = document.createElement('li');
-            if (oneTask.id == getState('currentTaskId')) liTask.classList.add('selected');
-            liTask.dataset.id = oneTask.id;
-            let dateHere = new Date(oneTask.dateCompleted);
-            const dateFormat = () => {
-                let day = ('0' + (dateHere.getDate())).slice(-2);
-                let month = ('0' + (dateHere.getMonth() + 1)).slice(-2);
-                return day + '.' + month;
-            }
-            liTask.innerHTML = `${oneTask.name}<p><span class="completeDate">${dateFormat()}</span><span class="del" onclick="deleteTask(${oneTask.id})">☒</span></p>`;
-            archive.append(liTask);
-        }
-    }
-
-    //////// Clear all
-
-    clearAll.onclick = function () {
-
-        if (!confirm('You really want to clear all the archive?')) return;
-        let keysOfStorage = Object.keys(localStorage);
-        keysOfStorage.sort((a, b) => b.replace(/\D/g,'') - a.replace(/\D/g,''));
-        for (let key of keysOfStorage) {
-            if (key === 'state') continue;
-            let oneTask = JSON.parse(localStorage.getItem(key));
-            if (!oneTask.dateCompleted) continue;
-            localStorage.removeItem('task-' + oneTask.id);
-        }
-        location.reload();
-}
-
-/////// Complete task
-
-let encouragements = ['Cool!', 'Congruts!', 'Well done!', 'Perfect!', 'Amazing!', 'Good job!'];
-
-function completeTask() {
-    let thisTask = getFullObject(getState('currentTaskId'));
-    if (thisTask.dateCompleted) return;
-    let now = new Date();
-    thisTask.dateCompleted = now;
-    completed.innerHTML =  `${now}`;
-    localStorage.setItem(`task-${getState('currentTaskId')}`, JSON.stringify(thisTask));
-    setState('currentTaskId', getOneId);
-    showEncouragement();
-    setTimeout(() => {location.reload()}, 1500);
-    
-}  
-
-
-
-function showEncouragement() {
-    let phrase = encouragements[Math.floor(Math.random() * 6)];
-    encouragement.innerHTML = `${phrase}`;
-    setTimeout(() => {encouragement.innerHTML = ''}, 1500);
-}
-//////// Added & Completed dates
-
-function getAddedAndCompleted() {
-    let thisTask = getFullObject(getState('currentTaskId'));
-    if (!thisTask) return;
-    let dateAdded = new Date(thisTask.dateAdded);
-    added.innerHTML = `${dateAdded.toLocaleDateString()} at ${dateAdded.toLocaleTimeString("ru", { hour12: false })}`;
-    if (thisTask.dateCompleted) {
-        added.parentNode.style.display = 'inherit';
-        completed.parentNode.style.display = 'inherit';
-        let dateCompleted = new Date(thisTask.dateCompleted);
-        completed.innerHTML = `${dateCompleted.toLocaleDateString()} at ${dateCompleted.toLocaleTimeString("ru", { hour12:  false })}`;
-    }
-    else {
-        completed.parentNode.style.display = 'none';
-        completed.innerHTML = '';
-    }
-}
-
-</script>
-
-
-
-</section>
+    </script>
+  </section>
+<script src="storage.js"></script>
+<script src="utilities.js"></script>
+<script src="DOM.js"></script>
 </body>
 </html>
