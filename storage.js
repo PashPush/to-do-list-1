@@ -21,6 +21,7 @@ addNew.addEventListener('submit', (event) => {
   event.preventDefault();
   addNewTask(event)});
 
+let task = document.querySelector('.task');
 
 const addNewTask = (event) => {
   if (!task.value) {

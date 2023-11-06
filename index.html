@@ -2,6 +2,7 @@
 <head>
   <title>To do list</title>
   <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="shortcut icon" href="favicon.png">
 </head>
 
 <body>
@@ -48,33 +49,8 @@
     </section> -->
   </div>
 </div>
-
-<script>
-
-
-let task = document.querySelector('.task');
-
-let notes = document.querySelector('.notes');
-let completeBtn = document.querySelector('.completeBtn');
-
-   
-    //// Task List
-    window.onload = function(){
-        getTaskList();
-        getArchiveList();
-        getNotes();
-        let stars = tasks.querySelectorAll('.star');
-        for (let star of stars) {
-            star.addEventListener('click', () => {
-            star.classList.toggle('active');
-            });
-        }
-    }
-
-    </script>
-  </section>
+<script src="DOM.js"></script>
 <script src="storage.js"></script>
 <script src="utilities.js"></script>
-<script src="DOM.js"></script>
 </body>
 </html>

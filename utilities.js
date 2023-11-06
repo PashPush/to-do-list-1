@@ -27,6 +27,14 @@ slide.addEventListener('click',
 
 //// TASKS MANIPULATIONS
 
+const getStars = () => {
+  let stars = tasks.querySelectorAll('.star');
+    for (let star of stars) {
+      star.addEventListener('click', () => {
+      star.classList.toggle('active');
+      });
+    }
+}
 
 const changePriority = (id) => {
   let fullObj = getFullObject(id);
@@ -92,6 +100,7 @@ clearAll.onclick = function () {
   }
   // location.reload(); // RELOAD
   setState('currentTaskId', getOneId());
+  getTaskList();
   getArchiveList();
   getNotes();
 }

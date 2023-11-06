@@ -1,5 +1,11 @@
 'use strict';
 
+window.onload = function(){
+  getTaskList();
+  getArchiveList();
+  getNotes();
+  getStars();
+}
 
 const getFullObject = (id) => {
   return JSON.parse(localStorage.getItem(id));
@@ -58,6 +64,9 @@ const emptyListHandler = () => {
     completed.parentNode.classList.remove('display-none');
   }
 }
+
+let completeBtn = document.querySelector('.completeBtn');
+let notes = document.querySelector('.notes');
 
 const getNotes = () => {
   notes.value = '';
