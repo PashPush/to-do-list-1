@@ -17,7 +17,9 @@ const getState = (key) => {
 }
 
 let addNew = document.querySelector('.add');
-addNew.addEventListener('submit', (event) => {addNewTask(event)});
+addNew.addEventListener('submit', (event) => {
+  event.preventDefault();
+  addNewTask(event)});
 
 
 const addNewTask = (event) => {
@@ -38,6 +40,7 @@ const addNewTask = (event) => {
   localStorage.setItem(newId, JSON.stringify(taskSample));
   setState('currentTaskId', newId);
   setState('nextTaskId', `${parseInt(newId) + 1}T`);
+  location.reload(); // RELOAD
 }
 
 

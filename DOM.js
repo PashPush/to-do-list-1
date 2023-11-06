@@ -16,14 +16,12 @@ const getField = (field, id) => {
     return obj[field];
   }
   else {
-    setState('currentTaskId', getOneId())
-    try{
+    setState('currentTaskId', getOneId());
+    if (getState('currentTaskId')) {
       getField(field, getOneId());
     }
-    catch(e){
-      throw new Error('no id avalible');
-    }
-    location.reload(); // RELOAD
+    else return '';
+    // location.reload(); // RELOAD
   }
 }
 
@@ -38,11 +36,14 @@ const getOneId = () => {
 }
 
 const deleteTask = (id) => {
-  if (id == getState('currentTaskId')) {
+  if (id === getState('currentTaskId')) {
     setState('currentTaskId', getOneId());
   }
   localStorage.removeItem(id);
-  location.reload(); // RELOAD
+  // location.reload(); // RELOAD
+  getTaskList();
+  getArchiveList();
+  getNotes();
 }
 
 const emptyListHandler = () => {
@@ -58,7 +59,29 @@ const emptyListHandler = () => {
   }
 }
 
+const getNotes = () => {
+  notes.value = '';
+  if (getState('activeTasks') > 0) { 
+    notes.disabled = false;
+    completeBtn.addEventListener('click', completeTask);
+    notes.addEventListener('input', () => {
+      let fullObject = getFullObject(getState('currentTaskId'));
+      fullObject.note = notes.value;
+      localStorage.setItem(getState('currentTaskId'), JSON.stringify(fullObject))});
+  } else {
+    notes.disabled = true;
+  }
+  getAddedAndCompleted();
+  if (getState('currentTaskId')) {
+    notes.value = getField('note', getState('currentTaskId'));
+  }
+  else {
+    notes.value = '';
+  }
+}
+
 const getTaskList = () => {       
+  tasks.innerHTML = '';
   let keysOfStorage = getSortedKeys();
   for (let key of keysOfStorage) {
     if (key === 'state') continue;
@@ -86,6 +109,7 @@ const compareDates = (a, b) => {
 }
 
 const getArchiveList = () => {  
+  archive.innerHTML = '';
   let tasksArr = [];
   let keysOfStorage = Object.keys(localStorage);
   for (let key of keysOfStorage) {
@@ -93,7 +117,6 @@ const getArchiveList = () => {
     let oneTask = getFullObject(key);
     if (!oneTask.dateCompleted) continue;
     tasksArr.push(oneTask);
-    console.log(oneTask.dateCompleted);
   }
   tasksArr.sort(compareDates);
   for (let task of tasksArr) {

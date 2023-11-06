@@ -11,7 +11,7 @@
 
   <div class="sideBarLeft">
     <section class="theList">
-      <form class="add" name="addNewTask">
+      <form class="add" name="addNewTask" method="post">
         <label for="task">Add new:</label>
         <input name="task" class="task" id="task" type="text" placeholder="what to do?"/>
         <button type="submit">+</button>
@@ -62,20 +62,7 @@ let completeBtn = document.querySelector('.completeBtn');
     window.onload = function(){
         getTaskList();
         getArchiveList();
-        setTimeout(() => {
-            if (getState('activeTasks') > 0) { 
-                notes.disabled = false;
-                notes.value = getField('note', getState('currentTaskId'));
-                 getAddedAndCompleted();
-                completeBtn.addEventListener('click', completeTask);
-                notes.addEventListener('input', () => {
-                    let fullObject = getFullObject(getState('currentTaskId'));
-                    fullObject.note = notes.value;
-                    localStorage.setItem(getState('currentTaskId'), JSON.stringify(fullObject))});
-            } else {
-                notes.disabled = true;
-            }
-        }, 10);
+        getNotes();
         let stars = tasks.querySelectorAll('.star');
         for (let star of stars) {
             star.addEventListener('click', () => {

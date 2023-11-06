@@ -90,7 +90,10 @@ clearAll.onclick = function () {
     if (!oneTask.dateCompleted) continue;
     localStorage.removeItem(oneTask.id);
   }
-  location.reload(); // RELOAD
+  // location.reload(); // RELOAD
+  setState('currentTaskId', getOneId());
+  getArchiveList();
+  getNotes();
 }
 
 
@@ -108,7 +111,11 @@ const completeTask = () => {
   localStorage.setItem(getState('currentTaskId'), JSON.stringify(thisTask));
   setState('currentTaskId', getOneId());
   showEncouragement();
-  setTimeout(() => {location.reload()}, 1500); // RELOAD
+  setTimeout(() => {
+    getTaskList();
+    getArchiveList();
+    getNotes();
+  }, 1500); 
 }  
 
 let encouragement = document.querySelector('.encouragement');
@@ -126,6 +133,10 @@ let added = document.querySelector('.added');
 let completed = document.querySelector('.completed');
 
 const getAddedAndCompleted = () => {
+  if(!getState('currentTaskId')) {
+    added.parentNode.classList.add('display-none');
+    completed.parentNode.classList.add('display-none');
+  }
   let thisTask = getFullObject(getState('currentTaskId'));
   if (!thisTask) return;
   let dateAdded = new Date(thisTask.dateAdded);
