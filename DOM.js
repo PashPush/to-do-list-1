@@ -82,7 +82,6 @@ const getAddedAndCompleted = () => {
     completed.parentNode.classList.add('display-none');
   }
   let thisTask = getFullObject(getState('currentTaskId'));
-  console.log(thisTask);
   if (!thisTask) return;
   let dateAdded = new Date(thisTask.dateAdded);
   added.innerHTML = `${dateAdded.toLocaleDateString()} at ${dateAdded.toLocaleTimeString("ru", { hour12: false })}`;
@@ -120,7 +119,6 @@ const getNotes = () => {
   }
   getAddedAndCompleted();
   if (getState('currentTaskId')) {
-    console.log('in getNotes current: ' + getState('currentTaskId'));
     notes.value = getField('note', getState('currentTaskId'));
   }
   else {
