@@ -1,10 +1,15 @@
 'use strict';
 
-window.onload = function(){
+
+const refreshAll = () => {
   getTaskList();
   getArchiveList();
   getNotes();
   getStars();
+}
+
+window.onload = function(){
+  refreshAll();
 }
 
 const getFullObject = (id) => {
@@ -24,10 +29,12 @@ const getField = (field, id) => {
   else {
     setState('currentTaskId', getOneId());
     if (getState('currentTaskId')) {
-      getField(field, getOneId());
+      obj = getFullObject(id);
+      return obj[field];
     }
-    else return '';
-    // location.reload(); // RELOAD
+    else {
+      return '';
+    }
   }
 }
 
@@ -37,19 +44,18 @@ const getOneId = () => {
   for (let key of keysOfStorage) {
     if (key === 'state') continue;
     let oneTask = getFullObject(key);
-    if (oneTask.id && !oneTask.dateCompleted) return oneTask.id;
+    if (oneTask.id && !oneTask.dateCompleted) {
+      return oneTask.id;
+    }
   }
 }
 
 const deleteTask = (id) => {
-  if (id === getState('currentTaskId')) {
+  localStorage.removeItem(id);
+  if (id == getState('currentTaskId')) {
     setState('currentTaskId', getOneId());
   }
-  localStorage.removeItem(id);
-  // location.reload(); // RELOAD
-  getTaskList();
-  getArchiveList();
-  getNotes();
+  refreshAll();
 }
 
 const emptyListHandler = () => {
@@ -64,6 +70,38 @@ const emptyListHandler = () => {
     completed.parentNode.classList.remove('display-none');
   }
 }
+
+//// SHOW Added & Completed dates
+
+let added = document.querySelector('.added');
+let completed = document.querySelector('.completed');
+
+const getAddedAndCompleted = () => {
+  if(!getState('currentTaskId')) {
+    added.parentNode.classList.add('display-none');
+    completed.parentNode.classList.add('display-none');
+  }
+  let thisTask = getFullObject(getState('currentTaskId'));
+  console.log(thisTask);
+  if (!thisTask) return;
+  let dateAdded = new Date(thisTask.dateAdded);
+  added.innerHTML = `${dateAdded.toLocaleDateString()} at ${dateAdded.toLocaleTimeString("ru", { hour12: false })}`;
+  if (thisTask.dateCompleted) {
+    added.parentNode.classList.remove('display-none');
+    completed.parentNode.classList.remove('display-none');
+    
+    let dateCompleted = new Date(thisTask.dateCompleted);
+    completed.innerHTML = `${dateCompleted.toLocaleDateString()} at ${dateCompleted.toLocaleTimeString("ru", { hour12:  false })}`;
+  }
+  else {
+    completed.parentNode.classList.add('display-none');
+    completed.innerHTML = '';
+  }
+}
+
+
+//// NOTES
+
 
 let completeBtn = document.querySelector('.completeBtn');
 let notes = document.querySelector('.notes');
@@ -82,6 +120,7 @@ const getNotes = () => {
   }
   getAddedAndCompleted();
   if (getState('currentTaskId')) {
+    console.log('in getNotes current: ' + getState('currentTaskId'));
     notes.value = getField('note', getState('currentTaskId'));
   }
   else {
@@ -130,7 +169,7 @@ const getArchiveList = () => {
   tasksArr.sort(compareDates);
   for (let task of tasksArr) {
     let liTask = document.createElement('li');
-    if (task.id == getState('currentTaskId')) liTask.classList.add('selected');
+    if (task.id === getState('currentTaskId')) liTask.classList.add('selected');
     liTask.dataset.id = task.id;
     let dateHere = new Date(task.dateCompleted);
     const dateFormat = () => {

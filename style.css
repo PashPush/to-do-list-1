@@ -54,6 +54,9 @@ li.selected {
     background-color: #888;
     color: #fff;
 }
+.animation {
+    background-color: #6bcb6c !important;
+}
 li span {
     font-weight: 900;
     font-size: 14px;

@@ -41,7 +41,8 @@ const addNewTask = (event) => {
   localStorage.setItem(newId, JSON.stringify(taskSample));
   setState('currentTaskId', newId);
   setState('nextTaskId', `${parseInt(newId) + 1}T`);
-  location.reload(); // RELOAD
+  task.value = '';
+  refreshAll();
 }
 
 
