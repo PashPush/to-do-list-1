@@ -187,12 +187,8 @@ label, h3 {
 }
 .archive-slide span {
     font-size: 14px;
-    display: none;
     position: relative;
     top: -1px;
-}
-.actArrow {
-    display: inline !important;
 }
 .archive.act {
     height: 187px;

@@ -3,8 +3,8 @@
 //// TODAY IS
 
 const putCurrentDate = () => {    
-  let currentDate = new Date();
-  let date = document.querySelector('.date');
+  const currentDate = new Date();
+  const date = document.querySelector('.date');
   date.innerHTML =  `${currentDate.toLocaleDateString()}`;
 }
 
@@ -13,31 +13,42 @@ putCurrentDate();
 
 //// ARCHIVE SLIDER
 
-let slide = document.querySelector('.archive-slide');
-slide.addEventListener('click', 
-  () => archive.classList.toggle('act'));
-  slide.addEventListener('click', () => {
-  let spans = slide.querySelectorAll('span');
-  for (let span of spans) {
-    span.classList.toggle('actArrow');
+const SLIDE = document.querySelector('.archive-slide');
+
+const setSliderPosition = () => {
+  const span = SLIDE.querySelector('span');
+  if (getState('activeArchive')) {
+    span.innerHTML = '▼';
+    ARCHIVE.classList.add('act');
+  } else {
+    span.innerHTML = '▶';
+    if (ARCHIVE.classList.contains('act')) {
+      ARCHIVE.classList.remove('act');
     }
   }
-);
+}
+
+SLIDE.addEventListener('click', () => {
+    ARCHIVE.classList.toggle('act');
+    setState('activeArchive', !getState('activeArchive'))
+    setSliderPosition();
+  });
 
 
 //// TASKS MANIPULATIONS
 
+
 const getStars = () => {
-  let stars = tasks.querySelectorAll('.star');
+  const stars = TASKS.querySelectorAll('.star');
     for (let star of stars) {
       star.addEventListener('click', () => {
-      star.classList.toggle('active');
+        star.classList.toggle('active');
       });
     }
 }
 
 const changePriority = (id) => {
-  let fullObj = getFullObject(id);
+  const fullObj = getFullObject(id);
   fullObj['priority'] = !fullObj['priority'];
   localStorage[id] = JSON.stringify(fullObj);  
 }
@@ -46,12 +57,22 @@ const changePriority = (id) => {
 //// Task Selector 
 
 
-let tasks = document.querySelector('.tasks-list');
-let archive = document.querySelector('.archive');
+const TASKS = document.querySelector('.tasks-list');
+const ARCHIVE = document.querySelector('.archive');
+
+TASKS.onclick = function(event) {
+  if (event.target.tagName != "LI") return;
+    singleSelect(event.target);
+}
+
+ARCHIVE.onclick = function(event) {
+  if (event.target.tagName != "LI") return;
+    singleSelect(event.target);
+}
 
 const singleSelect = (li) => {
-  let selectedTask = (tasks.querySelector('.selected') || false);
-  let selectedArchive = (archive.querySelector('.selected') || false);
+  const selectedTask = (TASKS.querySelector('.selected') || false);
+  const selectedArchive = (ARCHIVE.querySelector('.selected') || false);
 
   if (selectedTask !== selectedArchive) {
     if (selectedTask) {
@@ -62,41 +83,32 @@ const singleSelect = (li) => {
   }
 
   li.classList.add('selected');
-  let oneTask = getFullObject(li.dataset.id);
+  const oneTask = getFullObject(li.dataset.id);
+
+  NOTES.value = getField('note', li.dataset.id);
+  setState('currentTaskId', li.dataset.id)
+  refreshAll();   //////// change because of not disabled notes
   if (oneTask.dateCompleted) {
-    notes.disabled = true;
+    NOTES.disabled = true;
   }
   else {
-    notes.disabled = false;
+    NOTES.disabled = false;
   }
-  notes.value = getField('note', li.dataset.id);
-  setState('currentTaskId', li.dataset.id)
-  refreshAll();
-}
-
-tasks.onclick = function(event) {
-  if (event.target.tagName != "LI") return;
-    singleSelect(event.target);
-}
-
-archive.onclick = function(event) {
-  if (event.target.tagName != "LI") return;
-    singleSelect(event.target);
 }
 
 
 //// Clear all
 
 
-let clearAll = document.querySelector('.clearAll');
+const CLEARALL = document.querySelector('.clearAll');
 
-clearAll.onclick = function () {
+CLEARALL.onclick = function () {
 
   if (!confirm('You really want to clear all the archive?')) return;
-  let keysOfStorage = Object.keys(localStorage);
+  const keysOfStorage = Object.keys(localStorage);
   for (let key of keysOfStorage) {
     if (key === 'state') continue;
-    let oneTask = getFullObject(key);
+    const oneTask = getFullObject(key);
     if (!oneTask.dateCompleted) continue;
     localStorage.removeItem(oneTask.id);
   }
@@ -108,16 +120,15 @@ clearAll.onclick = function () {
 //// Complete task
 
 
-let encouragements = ['Cool!', 'Congruts!', 'Well done!', 'Perfect!', 'Amazing!', 'Good job!'];
 
 const completeTask = () => {
-  let thisTask = getFullObject(getState('currentTaskId'));
+  const thisTask = getFullObject(getState('currentTaskId'));
   if (thisTask.dateCompleted) return;
-  let now = new Date();
+  const now = new Date();
   thisTask.dateCompleted = now;
   completed.innerHTML =  `${now}`;
   runAnimation(getState('currentTaskId'));
-  localStorage.setItem(getState('currentTaskId'), JSON.stringify(thisTask));
+  writeInStorage(getState('currentTaskId'), JSON.stringify(thisTask));
   setState('currentTaskId', getOneId());
   showEncouragement();
   setTimeout(() => {
@@ -126,15 +137,16 @@ const completeTask = () => {
 }  
 
 const runAnimation = (id) => {
-  let oneTask = tasks.querySelector('.selected');
+  const oneTask = TASKS.querySelector('.selected');
   oneTask.classList.add('animation');
 }
 
-let encouragement = document.querySelector('.encouragement');
+const ENCOURAGEMENT = document.querySelector('.encouragement');
 
 const showEncouragement = () => {
-  let phrase = encouragements[Math.floor(Math.random() * 6)];
-  encouragement.innerHTML = `${phrase}`;
-  setTimeout(() => {encouragement.innerHTML = ''}, 1500);
+  const encouragements = ['Cool!', 'Congruts!', 'Well done!', 'Perfect!', 'Amazing!', 'Good job!'];
+  const phrase = encouragements[Math.floor(Math.random() * 6)];
+  ENCOURAGEMENT.innerHTML = `${phrase}`;
+  setTimeout(() => {ENCOURAGEMENT.innerHTML = ''}, 1500);
 }
 

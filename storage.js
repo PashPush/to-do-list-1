@@ -1,35 +1,30 @@
 'use strict';
 
 
-if (!localStorage.getItem('state')) {
-  const primalState = { 'nextTaskId' : '0T', 'activeTasks' : 0 };
-  localStorage.setItem('state', JSON.stringify(primalState));
-}
-
 const setState = (key, value) => {
-  let fullObj = JSON.parse(localStorage.state);
+  const fullObj = JSON.parse(localStorage.state);
   fullObj[key] = value;
   localStorage.state = JSON.stringify(fullObj);
 }
 const getState = (key) => {
-  let fullObj = JSON.parse(localStorage.state);
+  const fullObj = JSON.parse(localStorage.state);
   return fullObj[key];
 }
 
-let addNew = document.querySelector('.add');
+const addNew = document.querySelector('.add');
 addNew.addEventListener('submit', (event) => {
   event.preventDefault();
   addNewTask(event)});
 
-let task = document.querySelector('.task');
-
+  
 const addNewTask = (event) => {
-  if (!task.value) {
+  const taskInput = document.querySelector('.task');
+  if (!taskInput.value) {
     event.preventDefault(); 
     return;
   }
-  let taskSample = {
-    name : task.value,
+  const taskSample = {
+    name : taskInput.value,
     note : '',
     dateAdded : new Date(),
     dateCompleted : '',
@@ -37,18 +32,25 @@ const addNewTask = (event) => {
     rate : 0,
     id : JSON.parse(localStorage.state).nextTaskId,
   }
-  let newId = getState('nextTaskId');
-  localStorage.setItem(newId, JSON.stringify(taskSample));
+  const newId = getState('nextTaskId');
+  writeInStorage(newId, JSON.stringify(taskSample));
   setState('currentTaskId', newId);
   setState('nextTaskId', `${parseInt(newId) + 1}T`);
-  task.value = '';
+  taskInput.value = '';
   refreshAll();
 }
 
+const writeInStorage = (id, value) => {
+  try {
+    localStorage.setItem(id, value);
+  }
+  catch (e) {
 
-///// not necessary
-// const setField = (key, value, id) => {
-//   let fullObj = JSON.parse(localStorage[id]);
-//   fullObj[key] = value;
-//   localStorage[id] = JSON.stringify(fullObj);
-// }
+  }
+}
+
+const setField = (key, value, id) => {
+  const fullObj = JSON.parse(localStorage[id]);
+  fullObj[key] = value;
+  localStorage[id] = JSON.stringify(fullObj);
+}

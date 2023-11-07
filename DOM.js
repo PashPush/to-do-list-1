@@ -6,6 +6,7 @@ const refreshAll = () => {
   getArchiveList();
   getNotes();
   getStars();
+  setSliderPosition();
 }
 
 window.onload = function(){
@@ -17,7 +18,7 @@ const getFullObject = (id) => {
 }
 
 const getSortedKeys = () => {
-  let keysOfStorage = Object.keys(localStorage);
+  const keysOfStorage = Object.keys(localStorage);
   return keysOfStorage.sort().reverse();
 }
 
@@ -39,11 +40,11 @@ const getField = (field, id) => {
 }
 
 const getOneId = () => {
-  let keysOfStorage = getSortedKeys();
+  const keysOfStorage = getSortedKeys();
   if (keysOfStorage.length <= 1) return false;
   for (let key of keysOfStorage) {
     if (key === 'state') continue;
-    let oneTask = getFullObject(key);
+    const oneTask = getFullObject(key);
     if (oneTask.id && !oneTask.dateCompleted) {
       return oneTask.id;
     }
@@ -59,42 +60,42 @@ const deleteTask = (id) => {
 }
 
 const emptyListHandler = () => {
-  let activeTasks = tasks.children.length;
+  const activeTasks = TASKS.children.length;
   setState('activeTasks', activeTasks);
   if (activeTasks === 0) {
-    tasks.innerHTML = "There are no tasks.<br>The very time to add few :)";
-    added.parentNode.classList.add('display-none');
-    completed.parentNode.classList.add('display-none');
+    TASKS.innerHTML = "There are no tasks.<br>The very time to add few :)";
+    ADDED.parentNode.classList.add('display-none');
+    COMPLETED.parentNode.classList.add('display-none');
   } else {
-    added.parentNode.classList.remove('display-none');
-    completed.parentNode.classList.remove('display-none');
+    ADDED.parentNode.classList.remove('display-none');
+    COMPLETED.parentNode.classList.remove('display-none');
   }
 }
 
 //// SHOW Added & Completed dates
 
-let added = document.querySelector('.added');
-let completed = document.querySelector('.completed');
+const ADDED = document.querySelector('.added');
+const COMPLETED = document.querySelector('.completed');
 
 const getAddedAndCompleted = () => {
   if(!getState('currentTaskId')) {
-    added.parentNode.classList.add('display-none');
-    completed.parentNode.classList.add('display-none');
+    ADDED.parentNode.classList.add('display-none');
+    COMPLETED.parentNode.classList.add('display-none');
   }
-  let thisTask = getFullObject(getState('currentTaskId'));
+  const thisTask = getFullObject(getState('currentTaskId'));
   if (!thisTask) return;
-  let dateAdded = new Date(thisTask.dateAdded);
-  added.innerHTML = `${dateAdded.toLocaleDateString()} at ${dateAdded.toLocaleTimeString("ru", { hour12: false })}`;
+  const dateAdded = new Date(thisTask.dateAdded);
+  ADDED.innerHTML = `${dateAdded.toLocaleDateString()} at ${dateAdded.toLocaleTimeString("ru", { hour12: false })}`;
   if (thisTask.dateCompleted) {
-    added.parentNode.classList.remove('display-none');
-    completed.parentNode.classList.remove('display-none');
+    ADDED.parentNode.classList.remove('display-none');
+    COMPLETED.parentNode.classList.remove('display-none');
     
-    let dateCompleted = new Date(thisTask.dateCompleted);
-    completed.innerHTML = `${dateCompleted.toLocaleDateString()} at ${dateCompleted.toLocaleTimeString("ru", { hour12:  false })}`;
+    const dateCompleted = new Date(thisTask.dateCompleted);
+    COMPLETED.innerHTML = `${dateCompleted.toLocaleDateString()} at ${dateCompleted.toLocaleTimeString("ru", { hour12:  false })}`;
   }
   else {
-    completed.parentNode.classList.add('display-none');
-    completed.innerHTML = '';
+    COMPLETED.parentNode.classList.add('display-none');
+    COMPLETED.innerHTML = '';
   }
 }
 
@@ -102,45 +103,45 @@ const getAddedAndCompleted = () => {
 //// NOTES
 
 
-let completeBtn = document.querySelector('.completeBtn');
-let notes = document.querySelector('.notes');
+const COMPLETEBTN = document.querySelector('.completeBtn');
+const NOTES = document.querySelector('.notes');
 
 const getNotes = () => {
-  notes.value = '';
+  NOTES.value = '';
   if (getState('activeTasks') > 0) { 
-    notes.disabled = false;
-    completeBtn.addEventListener('click', completeTask);
-    notes.addEventListener('input', () => {
-      let fullObject = getFullObject(getState('currentTaskId'));
-      fullObject.note = notes.value;
-      localStorage.setItem(getState('currentTaskId'), JSON.stringify(fullObject))});
+    NOTES.disabled = false;
+    COMPLETEBTN.addEventListener('click', completeTask);
+    NOTES.addEventListener('input', () => {
+      const fullObject = getFullObject(getState('currentTaskId'));
+      fullObject.note = NOTES.value;
+      writeInStorage(getState('currentTaskId'), JSON.stringify(fullObject))});
   } else {
-    notes.disabled = true;
+    NOTES.disabled = true;
   }
   getAddedAndCompleted();
   if (getState('currentTaskId')) {
-    notes.value = getField('note', getState('currentTaskId'));
+    NOTES.value = getField('note', getState('currentTaskId'));
   }
   else {
-    notes.value = '';
+    NOTES.value = '';
   }
 }
 
 const getTaskList = () => {       
-  tasks.innerHTML = '';
-  let keysOfStorage = getSortedKeys();
+  TASKS.innerHTML = '';
+  const keysOfStorage = getSortedKeys();
   for (let key of keysOfStorage) {
     if (key === 'state') continue;
-    let oneTask = getFullObject(key);
+    const oneTask = getFullObject(key);
     if (oneTask.dateCompleted) continue;
-    let liTask = document.createElement('li');
+    const liTask = document.createElement('li');
     if (oneTask.id === getState('currentTaskId')) liTask.classList.add('selected');
-    let isActiveStar = (getField('priority', oneTask.id)) ? 'active' : '';
+    const isActiveStar = (getField('priority', oneTask.id)) ? 'active' : '';
     liTask.dataset.id = oneTask.id;
     liTask.innerHTML = `${oneTask.name}<p>
         <span class="star ${isActiveStar}" onclick="changePriority('${oneTask.id}')">★</span>
         <span class="del" onclick="deleteTask('${oneTask.id}')">☒</span></p>`;
-    tasks.append(liTask);
+    TASKS.append(liTask);
   }
   emptyListHandler();
 }
@@ -148,34 +149,35 @@ const getTaskList = () => {
 //// Archive list sorted by date of complete
 
 const compareDates = (a, b) => {
-  let dateA = new Date(a.dateCompleted);
-  let dateB = new Date(b.dateCompleted);
+  const dateA = new Date(a.dateCompleted);
+  const dateB = new Date(b.dateCompleted);
  
   return dateB - dateA;
 }
 
+const dateFormat = (date) => {
+      const day = ('0' + (date.getDate())).slice(-2);
+      const month = ('0' + (date.getMonth() + 1)).slice(-2);
+      return day + '.' + month;
+    }
+
 const getArchiveList = () => {  
-  archive.innerHTML = '';
+  ARCHIVE.innerHTML = '';
   let tasksArr = [];
-  let keysOfStorage = Object.keys(localStorage);
+  const keysOfStorage = Object.keys(localStorage);
   for (let key of keysOfStorage) {
     if (key === 'state') continue;
-    let oneTask = getFullObject(key);
+    const oneTask = getFullObject(key);
     if (!oneTask.dateCompleted) continue;
     tasksArr.push(oneTask);
   }
   tasksArr.sort(compareDates);
   for (let task of tasksArr) {
-    let liTask = document.createElement('li');
+    const liTask = document.createElement('li');
     if (task.id === getState('currentTaskId')) liTask.classList.add('selected');
     liTask.dataset.id = task.id;
-    let dateHere = new Date(task.dateCompleted);
-    const dateFormat = () => {
-      let day = ('0' + (dateHere.getDate())).slice(-2);
-      let month = ('0' + (dateHere.getMonth() + 1)).slice(-2);
-      return day + '.' + month;
-    }
-    liTask.innerHTML = `${task.name}<p><span class="completeDate">${dateFormat()}</span><span class="del" onclick="deleteTask('${task.id}')">☒</span></p>`;
-    archive.append(liTask);
+    const dateHere = new Date(task.dateCompleted);
+    liTask.innerHTML = `${task.name}<p><span class="completeDate">${dateFormat(dateHere)}</span><span class="del" onclick="deleteTask('${task.id}')">☒</span></p>`;
+    ARCHIVE.append(liTask);
   }
 }

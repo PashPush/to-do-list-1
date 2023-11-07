@@ -21,8 +21,7 @@
     </section>
 
     <section class="no-bg">
-      <h3 class="archive-slide">Archive <span class='actArrow'>▶</span> 
-        <span>▼</span> </h3>
+      <h3 class="archive-slide">Archive <span>▶</span></h3>
         <p class="clearAll">Clear all</p>
         <ul class='archive'></ul>
     </section>
@@ -49,6 +48,12 @@
     </section> -->
   </div>
 </div>
+<script>
+  if (!localStorage.getItem('state')) {
+  const primalState = { 'nextTaskId' : '0T', 'activeTasks' : 0, 'activeArchive' : false, };
+  localStorage.setItem('state', JSON.stringify(primalState));
+}
+</script>
 <script src="DOM.js"></script>
 <script src="storage.js"></script>
 <script src="utilities.js"></script>
