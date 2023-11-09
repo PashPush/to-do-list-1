@@ -126,7 +126,7 @@ const completeTask = () => {
   if (thisTask.dateCompleted) return;
   const now = new Date();
   thisTask.dateCompleted = now;
-  completed.innerHTML =  `${now}`;
+  COMPLETED.innerHTML =  `${now}`;
   runAnimation(getState('currentTaskId'));
   writeInStorage(getState('currentTaskId'), JSON.stringify(thisTask));
   setState('currentTaskId', getOneId());
@@ -141,12 +141,12 @@ const runAnimation = (id) => {
   oneTask.classList.add('animation');
 }
 
-const ENCOURAGEMENT = document.querySelector('.encouragement');
 
 const showEncouragement = () => {
+  const encouragement = document.querySelector('.encouragement');
   const encouragements = ['Cool!', 'Congruts!', 'Well done!', 'Perfect!', 'Amazing!', 'Good job!'];
   const phrase = encouragements[Math.floor(Math.random() * 6)];
-  ENCOURAGEMENT.innerHTML = `${phrase}`;
-  setTimeout(() => {ENCOURAGEMENT.innerHTML = ''}, 1500);
+  encouragement.innerHTML = `${phrase}`;
+  setTimeout(() => {encouragement.innerHTML = ''}, 1500);
 }
 

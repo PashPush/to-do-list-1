@@ -54,8 +54,8 @@ li.selected {
     background-color: #888;
     color: #fff;
 }
-.animation {
-    background-color: #6bcb6c !important;
+.selected.animation {
+    background-color: #6bcb6c;
 }
 li span {
     font-weight: 900;
@@ -213,18 +213,18 @@ label, h3 {
     background-color: rgb(221 255 221);
     width: 204px;
 }
-.archive li.selected {
-    background-color: rgb(107 203 107) !important;
-}
 .archive li:nth-child(2n-1) {
     background-color: rgb(198, 255, 198);
+}
+.archive li.selected {
+    background-color: rgb(107 203 107);
 }
 .archive li:hover {
     background-color: rgb(125 228 126) !important;
     color: #fff;
 }
 .display-none {
-    display: none !important;
+    display: none;
 }
 
 

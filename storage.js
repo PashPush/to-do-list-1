@@ -23,6 +23,7 @@ const addNewTask = (event) => {
     event.preventDefault(); 
     return;
   }
+  const newId = getState('nextTaskId');
   const taskSample = {
     name : taskInput.value,
     note : '',
@@ -30,9 +31,8 @@ const addNewTask = (event) => {
     dateCompleted : '',
     priority : false,
     rate : 0,
-    id : JSON.parse(localStorage.state).nextTaskId,
+    id : newId,
   }
-  const newId = getState('nextTaskId');
   writeInStorage(newId, JSON.stringify(taskSample));
   setState('currentTaskId', newId);
   setState('nextTaskId', `${parseInt(newId) + 1}T`);
@@ -45,7 +45,7 @@ const writeInStorage = (id, value) => {
     localStorage.setItem(id, value);
   }
   catch (e) {
-
+    throw new Error(`Couldn't write it storage: ${e}`);
   }
 }
 
