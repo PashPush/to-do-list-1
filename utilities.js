@@ -5,7 +5,7 @@
 const putCurrentDate = () => {    
   const currentDate = new Date();
   const date = document.querySelector('.date');
-  date.innerHTML =  `${currentDate.toLocaleDateString()}`;
+  putIntoHTML(date, `${currentDate.toLocaleDateString()}`);
 }
 
 putCurrentDate();
@@ -18,10 +18,10 @@ const SLIDE = document.querySelector('.archive-slide');
 const setSliderPosition = () => {
   const span = SLIDE.querySelector('span');
   if (getState('activeArchive')) {
-    span.innerHTML = '▼';
+    putIntoHTML(span, '▼');
     ARCHIVE.classList.add('act');
   } else {
-    span.innerHTML = '▶';
+    putIntoHTML(span, '▶');
     if (ARCHIVE.classList.contains('act')) {
       ARCHIVE.classList.remove('act');
     }
@@ -98,7 +98,6 @@ const singleSelect = (li) => {
 const CLEARALL = document.querySelector('.clearAll');
 
 CLEARALL.onclick = function () {
-
   if (!confirm('You really want to clear all the archive?')) {
     return;
   }
@@ -125,11 +124,11 @@ const completeTask = () => {
     return;
   }
   const now = new Date();
-  thisTask.dateCompleted = now;
+  setField(thisTask.id, 'dateCompleted', now);
   runAnimation(getState('currentTaskId'));
-  writeInStorage(getState('currentTaskId'), JSON.stringify(thisTask));
   changeCurrentTaskId();
   showEncouragement();
+  notesDisable(true);
   setTimeout(() => {
     refreshAll();
   }, 1500); 
@@ -143,7 +142,7 @@ const runAnimation = (id) => {
 const showEncouragement = () => {
   const encouragements = ['Cool!', 'Congruts!', 'Well done!', 'Perfect!', 'Amazing!', 'Good job!'];
   const encouragement = document.querySelector('.encouragement');
-  encouragement.innerHTML = `${encouragements[Math.floor(Math.random() * 6)]}`;
-  setTimeout(() => {encouragement.innerHTML = ''}, 1500);
+  putIntoHTML(encouragement, `${encouragements[Math.floor(Math.random() * 6)]}`);
+  setTimeout(() => {clearHTML(encouragement)}, 1500);
 }
 

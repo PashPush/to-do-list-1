@@ -29,11 +29,19 @@ const showBlocks = (...args) => {
   })
 }
 
+const putIntoHTML = (obj, value) => {
+  obj.innerHTML = value;
+}
+
+const clearHTML = (obj) => {
+  obj.innerHTML = '';
+}
+
 const emptyListHandler = () => {
   const activeTasks = TASKS.children.length;
   setState('activeTasks', activeTasks);
   if (activeTasks === 0) {
-    TASKS.innerHTML = "There are no tasks.<br>The very time to add few :)";
+    putIntoHTML(TASKS, "There are no tasks.<br>The very time to add few :)");
     hideBlocks(ADDED.parentNode, COMPLETED.parentNode);
   } else {
     showBlocks(ADDED.parentNode, COMPLETED.parentNode);
@@ -53,14 +61,14 @@ const getAddedAndCompleted = () => {
   if (!thisTask) {
     return;
   }
-  ADDED.innerHTML = getPrettyDate(new Date(thisTask.dateAdded));
+  putIntoHTML(ADDED, getPrettyDate(new Date(thisTask.dateAdded)));
   if (thisTask.dateCompleted) {
     showBlocks(ADDED.parentNode, COMPLETED.parentNode);
-    COMPLETED.innerHTML = getPrettyDate(new Date(thisTask.dateCompleted));
+    putIntoHTML(COMPLETED, getPrettyDate(new Date(thisTask.dateCompleted)));
   }
   else {
     hideBlocks(COMPLETED.parentNode);
-    COMPLETED.innerHTML = '';
+    clearHTML(COMPLETED);
   }
 }
 
@@ -127,11 +135,11 @@ const getNotes = () => {
 //// TASKS
 
 
-const getTaskList = () => {       
-  TASKS.innerHTML = '';
+const getTaskList = () => {      
+  clearHTML(TASKS);
   const keysOfStorage = getSortedKeys();
   keysOfStorage.forEach((key) => {
-     const oneTask = getFullObject(key);
+    const oneTask = getFullObject(key);
     if (oneTask.dateCompleted) {
       return;
     };
@@ -141,9 +149,11 @@ const getTaskList = () => {
     }
     const isActiveStar = (getField('priority', oneTask.id)) ? 'active' : '';
     liTask.dataset.id = oneTask.id;
-    liTask.innerHTML = `${oneTask.name}<p>
+    putIntoHTML(liTask, 
+      `${oneTask.name}<p>
         <span class="star ${isActiveStar}" onclick="changePriority('${oneTask.id}')">★</span>
-        <span class="del" onclick="deleteTask('${oneTask.id}')">☒</span></p>`;
+        <span class="del" onclick="deleteTask('${oneTask.id}')">☒</span></p>`
+    );
     TASKS.append(liTask);
   });
   emptyListHandler();
@@ -181,17 +191,20 @@ const makeSortedArchiveArray = () => {
 }
 
 const getArchiveList = () => {  
-  ARCHIVE.innerHTML = '';
+  clearHTML(ARCHIVE);
   const tasksArr = makeSortedArchiveArray();
   tasksArr.forEach((task) => {
     const liTask = document.createElement('li');
+    liTask.dataset.id = task.id;
     if (task.id === getState('currentTaskId')) {
       notesDisable(true);
       liTask.classList.add('selected');
     }
-    liTask.dataset.id = task.id;
     const dateHere = new Date(task.dateCompleted);
-    liTask.innerHTML = `${task.name}<p><span class="completeDate">${dateFormatArchive(dateHere)}</span><span class="del" onclick="deleteTask('${task.id}')">☒</span></p>`;
+    putIntoHTML(liTask, 
+      `${task.name}<p><span class="completeDate">${dateFormatArchive(dateHere)}</span>
+      <span class="del" onclick="deleteTask('${task.id}')">☒</span></p>`
+    );
     ARCHIVE.append(liTask);
   });
 }

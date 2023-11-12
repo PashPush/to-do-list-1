@@ -6,10 +6,12 @@ const setState = (key, value) => {
   fullObj[key] = value;
   localStorage.state = JSON.stringify(fullObj);
 }
+
 const getState = (key) => {
   const fullObj = JSON.parse(localStorage.state);
   return fullObj[key];
 }
+
 const changeCurrentTaskId = (id) => {
   if (!id) {
     setState('currentTaskId', getOneId());
@@ -20,6 +22,7 @@ const changeCurrentTaskId = (id) => {
 
 const getOneId = () => {
   const keysOfStorage = getSortedKeys();
+  // here I use FOR because of RETURN that must abort the function
   for (let key of keysOfStorage) {
     const oneTask = getFullObject(key);
     if (!oneTask.dateCompleted) {
@@ -31,7 +34,7 @@ const getOneId = () => {
 }
 
 const getFullObject = (id) => {
-  return JSON.parse(localStorage.getItem(id));
+  return JSON.parse(readFromStorage(id));
 }
 
 const getSortedKeys = () => {
@@ -56,7 +59,6 @@ const getField = (field, id) => {
   }
 }
 
-
 const deleteTask = (id) => {
   localStorage.removeItem(id);
   if (id === getState('currentTaskId')) {
@@ -64,6 +66,7 @@ const deleteTask = (id) => {
   }
   refreshAll();
 }
+
 
 const addNew = document.querySelector('.add');
 addNew.addEventListener('submit', (event) => {
@@ -104,7 +107,16 @@ const writeInStorage = (id, value) => {
   }
 }
 
-const setField = (key, value, id) => {
+const readFromStorage = (id) => {
+  try {
+    return localStorage.getItem(id);
+  }
+  catch (e) {
+    throw new Error(`Couldn't read from storage: ${e}`);
+  }
+}
+
+const setField = (id, key, value) => {
   const fullObj = JSON.parse(localStorage[id]);
   fullObj[key] = value;
   localStorage[id] = JSON.stringify(fullObj);
