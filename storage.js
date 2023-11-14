@@ -67,13 +67,43 @@ const deleteTask = (id) => {
   refreshAll();
 }
 
+const editTaskName = (event) => {
+  const parentLi = event.target.parentNode.parentElement;
+  const oldName = parentLi.childNodes[0].data;
+
+  parentLi.innerHTML = `<input type='text' value='${oldName}' class='editInput' />
+  <p class='okCancel'><button class="editBtn okBtn">OK</button>
+  <button class="editBtn" onclick='refreshAll()'>Cancel</button></p>`;
+}
+
+const getEditListener = () => {
+  const editableTask = document.querySelector('.editable');
+  if(editableTask) {
+    editableTask.addEventListener('click', (event) => {
+      editTaskName(event);  
+
+      const thisEditInput = document.querySelector('.editInput');
+      const end = thisEditInput.value.length;
+      thisEditInput.setSelectionRange(end, end);
+      thisEditInput.focus();
+
+      const okBtn = document.querySelector('.okBtn');
+      okBtn.addEventListener('click', () => {
+        setField(getState('currentTaskId'), 'name', thisEditInput.value);
+        refreshAll();
+      } )
+    });
+  }  
+}
+
+
+
 
 const addNew = document.querySelector('.add');
 addNew.addEventListener('submit', (event) => {
   event.preventDefault();
   addNewTask(event)});
 
-  
 const addNewTask = (event) => {
   const taskInput = document.querySelector('.task');
   if (!taskInput.value) {

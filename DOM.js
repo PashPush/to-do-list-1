@@ -7,6 +7,7 @@ const refreshAll = () => {
   getStars();
   getArchiveList();
   setSliderPosition();
+  getEditListener();
 }
 
 window.onload = function(){
@@ -144,13 +145,17 @@ const getTaskList = () => {
       return;
     };
     const liTask = document.createElement('li');
+    let isEditable = false;
     if (oneTask.id === getState('currentTaskId')) {
       liTask.classList.add('selected');
+      isEditable = true;
     }
     const isActiveStar = (getField('priority', oneTask.id)) ? 'active' : '';
     liTask.dataset.id = oneTask.id;
+
     putIntoHTML(liTask, 
       `${oneTask.name}<p>
+        <span class="edit ${(isEditable) ? 'editable' : 'display-none'}">✎</span>
         <span class="star ${isActiveStar}" onclick="changePriority('${oneTask.id}')">★</span>
         <span class="del" onclick="deleteTask('${oneTask.id}')">☒</span></p>`
     );
@@ -158,6 +163,7 @@ const getTaskList = () => {
   });
   emptyListHandler();
 }
+
 
 //// Archive list sorted by date of complete
 

@@ -61,6 +61,7 @@ li span {
     font-weight: 900;
     font-size: 14px;
     color: #fff;
+    transition: all .3s ease;
 }
 li p {
     display: inline-block;
@@ -71,14 +72,15 @@ li p {
 }
 span.star {
     font-size: 14px;
-    padding: 0 10px;
+    padding: 0 2px 0 4px;
     position: relative;
     top: -2px;
-    transition: all .3s ease;
 }
-span.check, span.del {
+span.del {
     font-size: 24px;
-    transition: all .3s ease;
+}
+span.edit {
+    font-size: 18px;
 }
 span.completeDate {
     color: #333;
@@ -88,7 +90,7 @@ span.completeDate {
     top: -1px;
     padding: 5px;
 }
-span.check:hover {
+span.edit:hover {
     color:rgb(0, 234, 0);
 }
 span.star:hover {
@@ -225,6 +227,29 @@ label, h3 {
 }
 .display-none {
     display: none;
+}
+
+.editInput {
+    background-color: #888;
+    border: 0;
+    color: #fff;
+    padding: 2px;
+    font-size: 16px;
+    width: 160px;
+    outline: 0;
+}
+.okCancel {
+    top: 6px;
+}
+.editBtn {
+    border: 0;
+    background-color: #ccc;
+    border-radius: 5px;
+    padding: 4px 8px;
+}
+.editBtn:hover {
+    cursor: pointer;
+    background-color: #999;
 }
 
 
