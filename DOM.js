@@ -8,6 +8,7 @@ const refreshAll = () => {
   getArchiveList();
   setSliderPosition();
   getEditListener();
+  getPriorityList();
 }
 
 window.onload = function(){
@@ -212,5 +213,107 @@ const getArchiveList = () => {
       <span class="del" onclick="deleteTask('${task.id}')">☒</span></p>`
     );
     ARCHIVE.append(liTask);
+  });
+}
+
+
+////// PRIORITY
+
+
+const PRIORITY_LIST = document.querySelector(`.priority-list`); 
+const priorityTasks = PRIORITY_LIST.querySelectorAll(`.prior-item`); 
+
+PRIORITY_LIST.addEventListener(`dragstart`, (evt) => { 
+  evt.target.classList.add(`selected-prior`);
+})
+
+PRIORITY_LIST.addEventListener(`dragend`, (evt) => { 
+  evt.target.classList.remove(`selected-prior`);
+});
+
+PRIORITY_LIST.addEventListener(`dragover`, (evt) => { 
+  evt.preventDefault();
+
+  const activeElement = PRIORITY_LIST.querySelector(`.selected-prior`);
+  const currentElement = evt.target;
+  const isMoveable = activeElement !== currentElement &&
+    currentElement.classList.contains(`prior-item`);
+
+  if (!isMoveable) {
+    return;
+  }
+
+  // evt.clientY — вертикальная координата курсора в момент,
+  // когда сработало событие
+  const nextElement = getNextElement(evt.clientY, currentElement);
+
+  // Проверяем, нужно ли менять элементы местами
+  if (
+    nextElement &&
+    activeElement === nextElement.previousElementSibling ||
+    activeElement === nextElement
+  ) {
+    // Если нет, выходим из функции, чтобы избежать лишних изменений в DOM
+    return;
+  }
+
+  PRIORITY_LIST.insertBefore(activeElement, nextElement);
+ changePriorityOrder();
+});
+
+const getNextElement = (cursorPosition, currentElement) => { 
+  // Получаем объект с размерами и координатами
+  const currentElementCoord = currentElement.getBoundingClientRect();
+  // Находим вертикальную координату центра текущего элемента
+  const currentElementCenter = currentElementCoord.y + currentElementCoord.height / 2;
+
+  // Если курсор выше центра элемента, возвращаем текущий элемент
+  // В ином случае — следующий DOM-элемент
+  const nextElement = (cursorPosition < currentElementCenter) ?
+      currentElement :
+      currentElement.nextElementSibling;
+
+  return nextElement;
+};
+
+const changePriorityOrder = () => {
+  const priorityTasks = PRIORITY_LIST.querySelectorAll(`.prior-item`);
+  const priorArr = [];
+  for (let task of priorityTasks) {
+    priorArr.push(task.dataset.id);
+  }
+  setState('priorityOrder', priorArr);
+}
+
+const makeSortedPriorityArray = () => {
+  let tasksArr = [];
+  const keysOfTasks = getState('priorityOrder');
+  keysOfTasks.forEach((key) => {
+    const oneTask = getFullObject(key);
+    tasksArr.push(oneTask);
+  });
+  return tasksArr;
+}
+
+const getPriorityList = () => {   
+  clearHTML(PRIORITY_LIST);
+  const tasksArr = makeSortedPriorityArray();
+  if (!tasksArr) {
+    return;
+  }
+  tasksArr.forEach((task) => {
+    const liTask = document.createElement('li');
+    liTask.dataset.id = task.id;
+    liTask.classList.add('prior-item');
+    liTask.draggable = true;
+    if (task.id === getState('currentTaskId')) {
+      liTask.classList.add('selected');
+    }
+
+    putIntoHTML(liTask, 
+      `${task.name}<p>
+      <span class="star active" draggable="true" onclick="changePriority('${task.id}')">★</span></p>`
+    );
+    PRIORITY_LIST.append(liTask);
   });
 }

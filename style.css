@@ -32,6 +32,9 @@ section {
     margin: 5px auto;
     border-radius: 10px;
 }
+section.theList {
+    background-color: #bababa;
+}
 
 ul, ol {
     margin: 10px 0;
@@ -43,12 +46,12 @@ li {
     position: relative;
     transition: all .3s ease;
 }
-li:hover {
-    cursor: pointer;
-    background-color: #bbb !important;
-}
 li:nth-child(2n - 1) {
     background-color: #ccc;
+}
+li:hover {
+    cursor: pointer;
+    background-color: #d8d8d8;
 }
 li.selected {
     background-color: #888;
@@ -252,5 +255,58 @@ label, h3 {
     background-color: #999;
 }
 
+.tasks__title {
+    margin: 50px 0 20px 0;
+  
+    text-align: center;
+    text-transform: uppercase;
+}
+.tasks__list {
+    margin: 0;
+    padding: 0;
+  
+    list-style: none;
+}
+.tasks__item {
+    transition: background-color 0.5s;
+    margin-bottom: 10px;
+    padding: 5px;
+  
+    text-align: center;
+    border: 2px dashed #b2d9d0;
+    border-radius: 10px;
+    cursor: move;
+    background-color: #dff2ef;
+  
+    transition: background-color 0.5s;
+}
+.tasks__item:last-child {
+    margin-bottom: 0;
+}
+.selected-prior {
+    opacity: 0.6;
+}
+.priority-list span.star {
+    padding: 0 4px;
+    top: 5px;
+}
+section.priority {
+    background-color: #fff88e;
+}
+section.priority li:nth-child(2n - 1) {
+    background-color: #eee466;
+}
+section.priority li:hover {
+    background-color: #dcd248;
+}
+section.priority li.selected {
+    background-color: #afa72f;
+}
+section.priority .star{
+    color: #898226;
+}
+section.priority .star:hover{
+    color: #555;
+}
 
 /***************** Put transition & animation to all motions */

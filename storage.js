@@ -39,7 +39,7 @@ const getFullObject = (id) => {
 
 const getSortedKeys = () => {
   const keysOfStorage = Object.keys(localStorage).filter((key) => key != 'state');
-  return keysOfStorage.sort().reverse();
+  return keysOfStorage.sort((a, b) => {return parseInt(b) - parseInt(a)});
 }
 
 const getField = (field, id) => {
@@ -60,6 +60,9 @@ const getField = (field, id) => {
 }
 
 const deleteTask = (id) => {
+  if (!confirm('You really want delete this task?')) {
+    return;
+  }
   localStorage.removeItem(id);
   if (id === getState('currentTaskId')) {
     changeCurrentTaskId();
@@ -86,6 +89,14 @@ const getEditListener = () => {
       const end = thisEditInput.value.length;
       thisEditInput.setSelectionRange(end, end);
       thisEditInput.focus();
+
+      thisEditInput.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter') {
+          return;
+        }
+        setField(getState('currentTaskId'), 'name', thisEditInput.value);
+        refreshAll();
+      })
 
       const okBtn = document.querySelector('.okBtn');
       okBtn.addEventListener('click', () => {
@@ -150,4 +161,8 @@ const setField = (id, key, value) => {
   const fullObj = JSON.parse(localStorage[id]);
   fullObj[key] = value;
   localStorage[id] = JSON.stringify(fullObj);
+}
+
+const setPriorityState = (value) => {
+  setField('state', 'priorityOrder', value);
 }

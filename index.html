@@ -40,17 +40,13 @@
     </section>
     <section class="priority">
         <h3>★ Priorities ★</h3>
-        <ol>
-            <li>Task 1</li>
-            <li>Task 2</li>
-            <li>Task 3</li>
-        </ol>
+        <ul class="priority-list"></ul>
     </section>
   </div>
 </div>
 <script>
-  if (!localStorage.getItem('state')) {
-  const primalState = { 'nextTaskId' : '0T', 'activeTasks' : 0, 'activeArchive' : false, };
+if (!localStorage.getItem('state')) {
+  const primalState = { 'nextTaskId' : '0T', 'activeTasks' : 0, 'activeArchive' : false, 'priorityOrder' : [] };
   localStorage.setItem('state', JSON.stringify(primalState));
 }
 </script>
