@@ -61,17 +61,12 @@ const changePriority = (id) => {
   fullObj['priority'] = !fullObj['priority'];
   localStorage[id] = JSON.stringify(fullObj);  
   const priorArr = getState('priorityOrder');
-  if (fullObj['priority']){
-    if (!priorArr.includes(id)) {
-      priorArr.unshift(id);
-    }
-    setPriorityState(priorArr);
+  if (fullObj['priority'] && !priorArr.includes(id)){
+    priorArr.unshift(id);
   } else {
-    if (priorArr.includes(id)) {
-      priorArr.splice(priorArr.indexOf(id), 1);
-    }
-    setPriorityState(priorArr);
+    priorArr.splice(priorArr.indexOf(id), 1);
   }
+  setPriorityState(priorArr);
   refreshAll();
 }
 
@@ -122,7 +117,7 @@ const singleSelect = (li) => {
 const CLEARALL = document.querySelector('.clearAll');
 
 CLEARALL.onclick = function () {
-  if (!confirm('You really want to clear all the archive?')) {
+  if (!confirm('Do you really want to clear all the archive?')) {
     return;
   }
   const keysOfStorage = getSortedKeys();

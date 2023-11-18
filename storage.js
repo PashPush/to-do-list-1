@@ -60,7 +60,7 @@ const getField = (field, id) => {
 }
 
 const deleteTask = (id) => {
-  if (!confirm('You really want delete this task?')) {
+  if (!confirm('Do you really want to delete this task?')) {
     return;
   }
   localStorage.removeItem(id);
