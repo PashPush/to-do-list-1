@@ -221,7 +221,6 @@ const getArchiveList = () => {
 
 
 const PRIORITY_LIST = document.querySelector(`.priority-list`); 
-const priorityTasks = PRIORITY_LIST.querySelectorAll(`.prior-item`); 
 
 PRIORITY_LIST.addEventListener(`dragstart`, (evt) => { 
   evt.target.classList.add(`selected-prior`);
@@ -306,6 +305,7 @@ const getPriorityList = () => {
     liTask.dataset.id = task.id;
     liTask.classList.add('prior-item');
     liTask.draggable = true;
+    
     if (task.id === getState('currentTaskId')) {
       liTask.classList.add('selected');
     }

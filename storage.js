@@ -39,7 +39,7 @@ const getFullObject = (id) => {
 
 const getSortedKeys = () => {
   const keysOfStorage = Object.keys(localStorage).filter((key) => key != 'state');
-  return keysOfStorage.sort((a, b) => {return parseInt(b) - parseInt(a)});
+  return keysOfStorage.sort((a, b) => parseInt(b) - parseInt(a));
 }
 
 const getField = (field, id) => {
@@ -63,10 +63,11 @@ const deleteTask = (id) => {
   if (!confirm('Do you really want to delete this task?')) {
     return;
   }
-  localStorage.removeItem(id);
+  deleteFromStorage(id);
   if (id === getState('currentTaskId')) {
     changeCurrentTaskId();
   }
+  refreshPriorityState(id);
   refreshAll();
 }
 
@@ -74,9 +75,10 @@ const editTaskName = (event) => {
   const parentLi = event.target.parentNode.parentElement;
   const oldName = parentLi.childNodes[0].data;
 
-  parentLi.innerHTML = `<input type='text' value='${oldName}' class='editInput' />
+  putIntoHTML(parentLi, 
+  `<input type='text' value='${oldName}' class='editInput' />
   <p class='okCancel'><button class="editBtn okBtn">OK</button>
-  <button class="editBtn" onclick='refreshAll()'>Cancel</button></p>`;
+  <button class="editBtn" onclick='refreshAll()'>Cancel</button></p>`);
 }
 
 const getEditListener = () => {
@@ -154,6 +156,15 @@ const readFromStorage = (id) => {
   }
   catch (e) {
     throw new Error(`Couldn't read from storage: ${e}`);
+  }
+}
+
+const deleteFromStorage = (id) => {
+  try {
+    localStorage.removeItem(id);
+  }
+  catch (e) {
+    throw new Error(`Couldn't delete from storage: ${e}`);
   }
 }
 
