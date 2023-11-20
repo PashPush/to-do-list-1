@@ -47,10 +47,27 @@ const getStars = () => {
   })
 }
 
+const refreshPriorityState = (id) => {
+  const priorArr = getState('priorityOrder');
+  if (priorArr.includes(id)) {
+    priorArr.splice(priorArr.indexOf(id), 1);
+    setPriorityState(priorArr);
+  } 
+}
+
+
 const changePriority = (id) => {
   const fullObj = getFullObject(id);
   fullObj['priority'] = !fullObj['priority'];
   localStorage[id] = JSON.stringify(fullObj);  
+  const priorArr = getState('priorityOrder');
+  if (fullObj['priority'] && !priorArr.includes(id)){
+    priorArr.unshift(id);
+  } else {
+    priorArr.splice(priorArr.indexOf(id), 1);
+  }
+  setPriorityState(priorArr);
+  refreshAll();
 }
 
 
@@ -69,6 +86,7 @@ const selectHandler = (event) => {
 
 TASKS.addEventListener('click', selectHandler);
 ARCHIVE.addEventListener('click', selectHandler);
+PRIORITY_LIST.addEventListener('click', selectHandler);
 
 
 const singleSelect = (li) => {
@@ -82,6 +100,7 @@ const singleSelect = (li) => {
       selectedArchive.classList.remove('selected');
     }
   }
+  
 
   li.classList.add('selected');
   const oneTask = getFullObject(li.dataset.id);
@@ -98,7 +117,7 @@ const singleSelect = (li) => {
 const CLEARALL = document.querySelector('.clearAll');
 
 CLEARALL.onclick = function () {
-  if (!confirm('You really want to clear all the archive?')) {
+  if (!confirm('Do you really want to clear all the archive?')) {
     return;
   }
   const keysOfStorage = getSortedKeys();
@@ -125,11 +144,13 @@ const completeTask = () => {
   }
   const now = new Date();
   setField(thisTask.id, 'dateCompleted', now);
+  setField(thisTask.id, 'priority', false);
   runAnimation(getState('currentTaskId'));
   changeCurrentTaskId();
   showEncouragement();
   notesDisable(true);
   setTimeout(() => {
+    refreshPriorityState(thisTask.id);
     refreshAll();
   }, 1500); 
 }  

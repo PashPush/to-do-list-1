@@ -39,7 +39,7 @@ const getFullObject = (id) => {
 
 const getSortedKeys = () => {
   const keysOfStorage = Object.keys(localStorage).filter((key) => key != 'state');
-  return keysOfStorage.sort().reverse();
+  return keysOfStorage.sort((a, b) => parseInt(b) - parseInt(a));
 }
 
 const getField = (field, id) => {
@@ -60,12 +60,56 @@ const getField = (field, id) => {
 }
 
 const deleteTask = (id) => {
-  localStorage.removeItem(id);
+  if (!confirm('Do you really want to delete this task?')) {
+    return;
+  }
+  deleteFromStorage(id);
   if (id === getState('currentTaskId')) {
     changeCurrentTaskId();
   }
+  refreshPriorityState(id);
   refreshAll();
 }
+
+const editTaskName = (event) => {
+  const parentLi = event.target.parentNode.parentElement;
+  const oldName = parentLi.childNodes[0].data;
+
+  putIntoHTML(parentLi, 
+  `<input type='text' value='${oldName}' class='editInput' />
+  <p class='okCancel'><button class="editBtn okBtn">OK</button>
+  <button class="editBtn" onclick='refreshAll()'>Cancel</button></p>`);
+}
+
+const getEditListener = () => {
+  const editableTask = document.querySelector('.editable');
+  if(editableTask) {
+    editableTask.addEventListener('click', (event) => {
+      editTaskName(event);  
+
+      const thisEditInput = document.querySelector('.editInput');
+      const end = thisEditInput.value.length;
+      thisEditInput.setSelectionRange(end, end);
+      thisEditInput.focus();
+
+      thisEditInput.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter') {
+          return;
+        }
+        setField(getState('currentTaskId'), 'name', thisEditInput.value);
+        refreshAll();
+      })
+
+      const okBtn = document.querySelector('.okBtn');
+      okBtn.addEventListener('click', () => {
+        setField(getState('currentTaskId'), 'name', thisEditInput.value);
+        refreshAll();
+      } )
+    });
+  }  
+}
+
+
 
 
 const addNew = document.querySelector('.add');
@@ -73,7 +117,6 @@ addNew.addEventListener('submit', (event) => {
   event.preventDefault();
   addNewTask(event)});
 
-  
 const addNewTask = (event) => {
   const taskInput = document.querySelector('.task');
   if (!taskInput.value) {
@@ -116,8 +159,21 @@ const readFromStorage = (id) => {
   }
 }
 
+const deleteFromStorage = (id) => {
+  try {
+    localStorage.removeItem(id);
+  }
+  catch (e) {
+    throw new Error(`Couldn't delete from storage: ${e}`);
+  }
+}
+
 const setField = (id, key, value) => {
   const fullObj = JSON.parse(localStorage[id]);
   fullObj[key] = value;
   localStorage[id] = JSON.stringify(fullObj);
+}
+
+const setPriorityState = (value) => {
+  setField('state', 'priorityOrder', value);
 }
